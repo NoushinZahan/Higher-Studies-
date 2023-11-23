@@ -1,0 +1,171 @@
+﻿@model IEnumerable<MidTerm_Exm.Models.Country>
+@using X.PagedList
+@using X.PagedList.Mvc
+@using X.PagedList.Mvc.Common
+@{
+    ViewBag.Title = "Index";
+}
+
+<div class="row">
+    <div class="col-12">
+        <h3>Country List</h3>
+        <div class="d-flex justify-content-end mb-1">
+
+
+            <a href="@Url.Action("Create", "Countries")" class="btn btn-primary btn-sm">Create New</a>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>CountryName</th>
+                    <th>Capital</th>
+                    <th>Curency</th>
+                    <th>symbol</th>
+                    <th>Is Developed?</th>
+                    <th>...</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr style="vertical-align:middle" id="c_@c.Id">
+                        <td>
+                            <button type="button" class="btn btn-light showhide" data-pk="@c.Id">
+                                <i class="bi bi-plus show" id="show_@c.Id" data-cid="@c.Id"></i>
+                                <i class="bi bi-dash hide" id="hide_@c.Id" data-cid="@c.Id" style="display:none"></i>
+                            </button>
+                        </td>
+                        <td><img src="~/Pictures/@c.Picture" class="img-thumbnail" style="width:40px" /></td>
+                        <td>@c.CountryName</td>
+                        <td>@c.Capital</td>
+                        <td>@c.Currency</td>
+                        <td>@c.Symbol</td>
+                        <td>@(c.IsDeveloped ? "Yes": "No")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Countries", new {id=c.Id})" class="btn btn-success btn-sm">Edit</a>
+                            <button type="button" href="@Url.Action("Delete", "Countries", new {id=c.Id})" class="btn btn-danger btn-sm del" data-pk="@c.Id">Delete</button>
+
+                        </td>
+                    </tr>
+                    <tr id="u_@c.Id" style="display:none">
+                        <td></td>
+                        <td colspan="7">
+                            <h4>Universities</h4>
+                            <table class="table table-bordered">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>UniversityName</th>
+                                        <th>AdmissionRequirment</th>
+                                        <th>EstublishDate</th>
+                                        <th>PayCost</th>
+                                        <th>Ranking</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var u in c.Universities)
+                                    {
+                                        <tr>
+                                            <td>@u.UniversityName</td>
+                                            <td>@u.AdmissionRequirment</td>
+                                            <td>@u.EstublishDate.ToString("yyyy-MM-dd")</td>
+                                            <td>@u.PayingCost</td>
+                                            <td>@u.Ranking</td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end">
+            @Html.PagedListPager((IPagedList)Model, pg => Url.Action("Index", new { pg = pg }),
+    new PagedListRenderOptions
+    {
+       DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+       DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        PageClasses = new string[] { "page-link" },
+        LiElementClasses = new string[] { "page-item" }
+    })
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" id="delmodal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirm</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure to delete?</p>
+                <p class="text-danger">All related data will be remved.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="btndel">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+@section styles
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery-3.7.0.js"></script>
+    <script src="~/Scripts/bootstrap.bundle.js"></script>
+    <script>
+        $(() => {
+            $(".show").click(function () {
+                var cid = $(this).data("cid");
+                $(`#u_${cid}`).show();
+                $(`#hide_${cid}`).show();
+                $(this).hide();
+            });
+            $(".hide").click(function () {
+                var cid = $(this).data("cid");
+                $(`#u_${cid}`).hide();
+                $(`#show_${cid}`).show();
+                $(this).hide();
+            })
+        });
+    </script>
+    <script>
+        var delModal;
+        var delId = -1;
+        $(() => {
+            delModal = new bootstrap.Modal(document.getElementById('delmodal'));
+            $(".del").click(function () {
+                delModal.show();
+                delId = $(this).data("pk");
+                console.log(delId);
+            });
+            $("#btndel").click(() => {
+                $.ajax({
+                    type: "post",
+                    url: "/Countries/Delete/" + delId,
+                    dataType: "json",
+                    success: (r) => {
+                        if (r.success == true) {
+                            $("#c_" + delId).remove();
+                            $("#u_" + delId).remove();
+                        }
+                    }
+                });
+                delModal.hide();
+            });
+        })
+    </script>
+}
+
+
+
+
+
+

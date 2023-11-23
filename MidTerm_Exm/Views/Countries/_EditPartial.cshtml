@@ -1,0 +1,110 @@
+﻿@model MidTerm_Exm.ViewModels.CountryEditModel
+
+<h3>Edit country</h3>
+<input type="hidden" id="server-action" value="@ViewData["Act"]" />
+@Html.HiddenFor(x => x.Id)
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.CountryName, new { @class = "col-form-label col-form-label-sm col-2" })
+    <div class="col-6">
+        @Html.TextBoxFor(x => x.CountryName, new { @class = "form-control form-control-sm" })
+        @Html.ValidationMessageFor(x => x.CountryName, "", new { @class = "text-danger", style = "font-size:x-small" })
+    </div>
+</div>
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.Capital, new { @class = "col-form-label col-form-label-sm col-2" })
+    <div class="col-6">
+        @Html.TextBoxFor(x => x.Capital, new { @class = "form-control form-control-sm" })
+        @Html.ValidationMessageFor(x => x.Capital, "", new { @class = "text-danger", style = "font-size:x-small" })
+    </div>
+</div>
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.Currency, new { @class = "col-form-label col-form-label-sm col-2" })
+    <div class="col-6">
+        @Html.TextBoxFor(x => x.Currency, new { @class = "form-control form-control-sm" })
+        @Html.ValidationMessageFor(x => x.Currency, "", new { @class = "text-danger", style = "font-size:x-small" })
+    </div>
+</div>
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.Symbol, new { @class = "col-form-label col-form-label-sm col-2" })
+    <div class="col-6">
+        @Html.TextBoxFor(x => x.Symbol, new { @class = "form-control form-control-sm" })
+        @Html.ValidationMessageFor(x => x.Symbol, "", new { @class = "text-danger", style = "font-size:x-small" })
+    </div>
+</div>
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.Picture, new { @class = "col-form-label col-2 py-2" })
+    <div class="col-6 py-2">
+        @Html.TextBoxFor(x => x.Picture, new { @class = "form-control form-control-sm", type = "file" })
+        @Html.ValidationMessageFor(x => x.Picture, "", new { @class = "text-danger", style = "font-size:small" })
+    </div>
+    <div class="col-2 py-0">
+        <img src="~/Pictures/@ViewData["CurrentPic"]" class="img-thumbnail rounded-1" id="preview" style="width:40px" />
+    </div>
+</div>
+
+<div class="form-group row mb-1">
+    @Html.LabelFor(x => x.IsDeveloped, new { @class = "col-form-label col-form-label-sm col-2" })
+    <div class="col-6">
+        @Html.CheckBoxFor(x => x.IsDeveloped, new { @class = "form-check-input form-check-input-sm" })
+        @Html.ValidationMessageFor(x => x.IsDeveloped, "", new { @class = "text-danger", style = "font-size:x-small" })
+    </div>
+</div>
+
+
+
+
+<div class="col-12">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>University Name</th>
+                <th>Admission Requirment</th>
+                <th> Estublished</th>
+                <th>Paying Cost</th>
+                <th>Ranking</th>
+                <th>
+                    <button type="submit" class="btn btn-secondary btn-sm add" name="act" value="add" formnovalidate><i class="bi bi-plus"></i></button>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Universities.Count; i++)
+            {
+                @Html.HiddenFor(x => Model.Universities[i].Id)
+                <tr>
+                    <td>
+                        @Html.TextBoxFor(x => Model.Universities[i].UniversityName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => Model.Universities[i].UniversityName, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => Model.Universities[i].AdmissionRequirment, new { @class = "form-control debut" })
+                        @Html.ValidationMessageFor(x => Model.Universities[i].AdmissionRequirment, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => Model.Universities[i].EstublishDate, new { @class = "form-control date" })
+                        @Html.ValidationMessageFor(x => Model.Universities[i].EstublishDate, "", new { @class = "text-danger" })
+                    </td>
+
+                    <td>
+                        @Html.TextBoxFor(x => Model.Universities[i].PayingCost, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => Model.Universities[i].PayingCost, "", new { @class = "text-danger" })
+                    </td>
+                    <td>
+                        @Html.TextBoxFor(x => Model.Universities[i].Ranking, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(x => Model.Universities[i].Ranking, "", new { @class = "text-danger" })
+                    </td>
+                    <th>
+                        <button type="submit" class="btn btn-secondary btn-sm" name="act" value="remove_@Model.Universities[i].Id" formnovalidate><i class="bi bi-trash"></i></button>
+                    </th>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div class="row mb-1">
+    <div class="col-10 offset-2">
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary update" name="act" value="update">Save to database</button>
+        </div>
+    </div>
+</div>
